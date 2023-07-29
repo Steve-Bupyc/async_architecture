@@ -1,2 +1,2 @@
-# async_architecture
+# Async architecture
 Repository for the asynchronous architecture course
