@@ -1,0 +1,63 @@
+### Project ###
+docs/_build/
+docs/locale/
+/media/*
+/static/*
+/emails/*
+/config/settings/local.py
+/.vagrant
+coverage.xml
+junit-*.xml
+junit.xml
+venv/
+.venv/
+env
+.env
+
+### VIM ###
+*.sw[a-z]
+
+### OS X ###
+.DS_Store
+*~
+.python-version
+
+### Python ###
+*.py[cod]
+.cache
+__pycache__
+
+# Translations
+*.mo
+
+### Django ###
+*.log
+*.pot
+
+### PyCharm ###
+.idea
+
+### VisualStudioCode ###
+.vscode/*
+
+### Celery ###
+celerybeat.pid
+celerybeat-schedule.db
+celerybeat-schedule
+
+### Others ###
+/.project
+/.pydevproject
+ignored_helpers
+typings/
+
+### Test related ###
+.coverage
+htmlcov
+backend-coverage
+.tox
+.pytest_cache/
+
+# flake8-spellcheck
+whitelist.txt
+pydevproject.toml
