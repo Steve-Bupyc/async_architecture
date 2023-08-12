@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "task-manager"
+version = "0.1.0"
+description = ""
+authors = ["Stepan <steve.bupyc@gmail.com>"]
+readme = "README.md"
+packages = [{include = "task_manager"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.101.0"
+sqlalchemy = "^2.0.19"
+alembic = "^1.11.2"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+uvicorn = "^0.23.2"
+python-multipart = "^0.0.6"
+psycopg2-binary = "^2.9.7"
+aio-pika = "^9.2.1"
+flake8-pyproject = "^1.2.3"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+exclude = '''
+(
+  /(
+    | \.git          # root of the project
+    | \.pytest_cache
+    | \.venv
+    | \.vscode
+  )/
+)
+'''
+include = '\.pyi?$'
+line-length = 120
+target-version = ['py311']
+
+[tool.isort]
+balanced_wrapping = "True"
+combine_as_imports = "False"
+combine_star = "True"
+include_trailing_comma = "True"
+line_length = 120
+multi_line_output = 3
+order_by_type = "True"
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.flake8]
+exclude = [".git"]
+max-line-length = 120
+max-complexity = 10
+statistics = true
