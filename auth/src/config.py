@@ -15,7 +15,7 @@ DB_SCHEMA = "auth"
 # Services
 RABBITMQ_SERVICE_URL = "amqp://guest:guest@localhost:5672/"
 USERS_CUD_EVENTS_EXCHANGE = "users.cud.events"
-BUSINESS_EVENTS_EXCHANGE = "users.cud.events"
+BUSINESS_EVENTS_EXCHANGE = "bussines.events"
 
 # APP settings
 SECRET_KEY = "e8e2d862e49058382259f2e34a9d3854331c05c25b198b8cdc6a728ab24b3114"

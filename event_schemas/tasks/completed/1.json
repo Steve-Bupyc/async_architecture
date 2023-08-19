@@ -1,0 +1,67 @@
+{
+    "title": "tasks.completed.1",
+    "type": "object",
+    "$defs": {
+        "event_data": {
+            "properties": {
+                "guid": {
+                    "format": "uuid",
+                    "title": "Guid",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "guid"
+            ],
+            "title": "event_data",
+            "type": "object"
+        },
+        "meta_data": {
+            "properties": {
+                "id": {
+                    "format": "uuid",
+                    "title": "Id",
+                    "type": "string"
+                },
+                "version": {
+                    "title": "Version",
+                    "type": "integer"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "time": {
+                    "format": "date-time",
+                    "title": "Time",
+                    "type": "string"
+                },
+                "producer": {
+                    "title": "Producer",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "version",
+                "name",
+                "time",
+                "producer"
+            ],
+            "title": "meta_data",
+            "type": "object"
+        }
+    },
+    "properties": {
+        "meta": {
+            "$ref": "#/$defs/meta_data"
+        },
+        "data": {
+            "$ref": "#/$defs/event_data"
+        }
+    },
+    "required": [
+        "meta",
+        "data"
+    ]
+}

@@ -1,6 +1,7 @@
+import re
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from src.db.base import Roles
 
 
@@ -35,41 +36,24 @@ class UserResponseSchema(UserBaseSchema):
         from_attributes = True
 
 
-class UserCreatedRabbitSchema(UserBaseSchema):
-    guid: UUID
-    is_active: bool = False
-
-
-class UserCreatedRabbitSchemaV1(BaseModel):
-    id: UUID
-    version: int
-    name: str
-    time: str
-    producer: str
-    data: UserCreatedRabbitSchema
-
-
-class UserUpdatedRabbitSchema(UserBaseSchema):
-    guid: UUID
-    is_active: bool = False
-
-
-class UserRoleChangedRabbitSchema(BaseModel):
-    guid: UUID
-    role: Roles = Roles.worker
-    is_active: bool = False
-
-
 class TaskBaseSchema(BaseModel):
     title: str = ...
+    jira_id: str = ...
     description: str = ...
 
 
 class TaskCreateSchema(TaskBaseSchema):
-    pass
+    @field_validator("title")
+    def title_must_be_without_brackets(cls, v: str) -> str:
+        result = re.match("/[^\]\[]/", v)
+        if not result:
+            raise ValueError("Title must be without brackets")
+
+        return v.title()
 
 
 class TaskResponseSchema(TaskBaseSchema):
+    guid: UUID
     is_done: bool
 
     class Config:
