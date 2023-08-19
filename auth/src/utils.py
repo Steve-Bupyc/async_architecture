@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from fastapi import Depends, Security
+from fastapi import Depends
 from fastapi.security import SecurityScopes
 from jose import JWTError, jwt
 from pydantic import ValidationError
-
 from src.config import *
 from src.db.models import User
 from src.exceptions import InactiveUser, InvalidCredentials, PermissionDenied
@@ -48,7 +47,7 @@ async def get_current_user(security_scopes: SecurityScopes, token: Annotated[str
     return user
 
 
-async def get_current_active_user(current_user: Annotated[User, Security(get_current_user, scopes=["me"])]):
+async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
     if not current_user.is_active:
         raise InactiveUser()
 

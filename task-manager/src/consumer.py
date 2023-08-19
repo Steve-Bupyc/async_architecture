@@ -5,7 +5,6 @@ import logging
 from aio_pika import ExchangeType, connect_robust
 from aio_pika.abc import AbstractIncomingMessage
 from pydantic import ValidationError
-
 from src.config import *
 from src.db.models import User
 from src.schemas import (

@@ -1,7 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel, Extra
-
+from pydantic import BaseModel
 from src.db.base import Roles
 
 
@@ -39,6 +38,15 @@ class UserResponseSchema(UserBaseSchema):
 class UserCreatedRabbitSchema(UserBaseSchema):
     guid: UUID
     is_active: bool = False
+
+
+class UserCreatedRabbitSchemaV1(BaseModel):
+    id: UUID
+    version: int
+    name: str
+    time: str
+    producer: str
+    data: UserCreatedRabbitSchema
 
 
 class UserUpdatedRabbitSchema(UserBaseSchema):

@@ -2,7 +2,6 @@ import json
 import logging
 
 from aio_pika import DeliveryMode, ExchangeType, Message, connect_robust
-
 from src.config import *
 
 logger = logging.getLogger(__name__)

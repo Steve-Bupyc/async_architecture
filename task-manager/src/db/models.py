@@ -1,11 +1,9 @@
-from uuid import uuid4
-
 from sqlalchemy import UUID, Boolean, Column, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
-
-from src.config import *
 from src.db.base import Base, Roles, db
 from src.schemas import TaskCreateSchema, UserCreateSchema, UserUpdateSchema
+
+from schema_registry import SchemaRegistry
 
 
 class User(Base):
@@ -82,6 +80,8 @@ class Task(Base):
         db.commit()
         db.refresh(db_task)
 
+        await SchemaRegistry.validate_event({"test": 1}, "users.created", 1)
+
         return db_task
 
     @classmethod
@@ -92,9 +92,6 @@ class Task(Base):
             if new_value is not None:
                 cur_value = getattr(db_user, key)
                 if new_value != cur_value:
-                    if key == "role":
-                        role_changed = True
-
                     setattr(db_user, key, new_value)
 
         db.commit()

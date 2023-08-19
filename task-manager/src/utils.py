@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
 from typing import Annotated
 
 from fastapi import Depends, Security
 from fastapi.security import SecurityScopes
 from jose import JWTError, jwt
 from pydantic import ValidationError
-
 from src.config import *
 from src.db.models import User
 from src.exceptions import InactiveUser, InvalidCredentials, PermissionDenied

@@ -1,6 +1,6 @@
 from uuid import UUID
-from pydantic import BaseModel, validator
 
+from pydantic import BaseModel
 from src.db.base import Roles
 
 
@@ -33,24 +33,8 @@ class UserUpdateSchema(UserBaseSchema):
 
 
 class UserResponseSchema(UserBaseSchema):
+    guid: UUID
     is_active: bool | None = None
 
     class Config:
         from_attributes = True
-
-class UserRabbitSchema(UserBaseSchema):
-    guid: UUID
-    
-    @validator("guid")
-    def convert_guid_to_str(cls, guid):
-        return str(guid)
-
-class UserCreatedRabbitSchema(UserRabbitSchema):
-    is_active: bool = False
-
-class UserUpdatedRabbitSchema(UserRabbitSchema):
-    is_active: bool = False
-
-class UserRoleChangedRabbitSchema(UserRabbitSchema):
-    role: Roles = Roles.worker
-    is_active: bool = False
