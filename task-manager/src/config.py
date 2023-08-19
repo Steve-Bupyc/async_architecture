@@ -1,3 +1,5 @@
+import sys
+
 from fastapi.security import OAuth2PasswordBearer
 
 # DB settings
@@ -21,6 +23,9 @@ SECRET_KEY = "e8e2d862e49058382259f2e34a9d3854331c05c25b198b8cdc6a728ab24b3114"
 # to get a string like this run:
 # openssl rand -hex 32
 ALGORITHM = "HS256"
+
+# add SchemaRegistryValidator to the system path
+sys.path.insert(0, "/mnt/d/work/Projects/async architecture/async_architecture/")
 
 ORIGINS = [AUTH_SERVICE_URL, TASK_MANAGER_URL]
 

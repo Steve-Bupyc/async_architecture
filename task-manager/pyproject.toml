@@ -18,6 +18,8 @@ python-multipart = "^0.0.6"
 psycopg2-binary = "^2.9.7"
 aio-pika = "^9.2.1"
 flake8-pyproject = "^1.2.3"
+jsonschema = "^4.19.0"
+aiofiles = "^23.2.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
@@ -58,3 +60,4 @@ exclude = [".git"]
 max-line-length = 120
 max-complexity = 10
 statistics = true
+extend-ignore = ["SC100", "SC200", "F403", "F405"]

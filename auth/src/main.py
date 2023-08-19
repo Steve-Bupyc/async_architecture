@@ -1,9 +1,8 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, Security
+from fastapi import Depends, FastAPI
 from fastapi.security import OAuth2PasswordRequestForm
-
 from src.config import *
 from src.db.base import Base, Roles, engine
 from src.db.models import User
@@ -37,7 +36,7 @@ async def create_user(user: UserCreateSchema):
 
 
 @app.post("/users/{guid}/update/", response_model=UserResponseSchema)
-async def create_user(
+async def update_user(
     guid: UUID, user: UserUpdateSchema, current_user: Annotated[User, Depends(get_current_active_user)]
 ):
     if current_user.role != Roles.admin and current_user.guid != guid:

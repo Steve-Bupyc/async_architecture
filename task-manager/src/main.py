@@ -2,8 +2,6 @@ from typing import Annotated
 
 from fastapi import FastAPI, Security
 from fastapi.middleware.cors import CORSMiddleware
-
-from src.config import *
 from src.db.base import Base, engine
 from src.db.models import Task, User
 from src.schemas import TaskCreateSchema, TaskResponseSchema

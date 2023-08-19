@@ -1,11 +1,8 @@
-from uuid import uuid4
-
 from sqlalchemy import UUID, Boolean, Column, Enum, Integer, String, func
-
 from src.config import *
 from src.db.base import Base, Roles, db
 from src.producer import publish_message
-from src.schemas import UserCreateSchema, UserRoleChangedRabbitSchema, UserUpdateSchema, UserCreatedRabbitSchema, UserUpdatedRabbitSchema
+from src.schemas import UserCreateSchema, UserUpdateSchema
 
 
 class User(Base):
@@ -32,7 +29,7 @@ class User(Base):
 
     @classmethod
     async def create(self, user: UserCreateSchema):
-        setattr(user, "password",  self._get_password_hash(user.password))
+        setattr(user, "password", self._get_password_hash(user.password))
         db_user = User()
         for key in user.model_fields:
             setattr(db_user, key, getattr(user, key))
@@ -41,8 +38,16 @@ class User(Base):
         db.refresh(db_user)
 
         await publish_message(
-            UserCreatedRabbitSchema.model_validate(db_user.__dict__).model_dump(),
-            "UserCreated",
+            {
+                "guid": str(db_user.guid),
+                "username": db_user.username,
+                "full_name": db_user.full_name,
+                "role": db_user.role,
+                "is_active": db_user.is_active,
+            },
+            "users.created",
+            1,
+            USERS_CUD_EVENTS_EXCHANGE,
         )
 
         return db_user
@@ -63,14 +68,26 @@ class User(Base):
 
         db.commit()
         db.refresh(db_user)
+
         await publish_message(
-            UserUpdatedRabbitSchema.model_validate(db_user.__dict__).model_dump(),
-            "UserUpdated",
+            {
+                "guid": str(db_user.guid),
+                "username": db_user.username,
+                "full_name": db_user.full_name,
+                "role": db_user.role,
+                "is_active": db_user.is_active,
+            },
+            "users.updated",
+            1,
+            USERS_CUD_EVENTS_EXCHANGE,
         )
+        BUSINESS_EVENTS_EXCHANGE
         if role_changed:
             await publish_message(
-                UserRoleChangedRabbitSchema.model_validate(db_user.__dict__).model_dump(),
-                "UserRoleChanged"
+                {"guid": str(db_user.guid), "role": db_user.role},
+                "users.role_changed",
+                1,
+                BUSINESS_EVENTS_EXCHANGE,
             )
 
         return db_user
