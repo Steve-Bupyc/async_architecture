@@ -1,9 +1,11 @@
+import random
+
 from sqlalchemy import UUID, Boolean, Column, Enum, ForeignKey, Integer, String, func
 from sqlalchemy.orm import relationship
+from src.config import *
 from src.db.base import Base, Roles, db
+from src.producer import publish_message
 from src.schemas import TaskCreateSchema, UserCreateSchema, UserUpdateSchema
-
-from schema_registry import SchemaRegistry
 
 
 class User(Base):
@@ -59,6 +61,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True)
     guid = Column(UUID(as_uuid=True), server_default=func.gen_random_uuid())
     title = Column(String, nullable=False)
+    jira_id = Column(String, nullable=False)
     description = Column(String)
     created_by = Column(UUID(as_uuid=True), ForeignKey("user.guid"), index=True, nullable=False)
     assigned_to = Column(UUID(as_uuid=True), ForeignKey("user.guid"), index=True, nullable=False)
@@ -80,24 +83,61 @@ class Task(Base):
         db.commit()
         db.refresh(db_task)
 
-        await SchemaRegistry.validate_event({"test": 1}, "users.created", 1)
+        await publish_message(
+            {
+                "guid": str(db_task.guid),
+                "title": db_task.title,
+                "jira_id": db_task.jira_id,
+                "created_by": str(db_task.created_by),
+                "assigned_to": str(db_task.assigned_to),
+            },
+            "tasks.created",
+            2,
+            TASKS_CUD_EVENTS_EXCHANGE,
+        )
+        await publish_message(
+            {
+                "guid": str(db_task.guid),
+                "assigned_to": str(db_task.assigned_to),
+            },
+            "tasks.assigned",
+            1,
+            BUSINESS_EVENTS_EXCHANGE,
+        )
 
         return db_task
 
     @classmethod
-    async def update(self, guid: UUID, user: UserUpdateSchema):
-        db_user = db.query(self).filter(self.guid == guid).first()
-        for key in user.model_fields:
-            new_value = getattr(user, key)
-            if new_value is not None:
-                cur_value = getattr(db_user, key)
-                if new_value != cur_value:
-                    setattr(db_user, key, new_value)
+    async def shuffle_tasks(self):
+        db_tasks = db.query(Task).filter(Task.is_done.is_(False)).all()
+        db_users = db.query(User.guid).filter(User.role.not_in([Roles.manager, Roles.admin])).all()
+        for db_task in db_tasks:
+            db_user = random.choice(db_users)
+            db_task.assigned_to = db_user.guid
+            db.commit()
+            db.refresh(db_task)
+            await publish_message(
+                {
+                    "guid": str(db_task.guid),
+                    "assigned_to": str(db_task.assigned_to),
+                },
+                "tasks.assigned",
+                1,
+                BUSINESS_EVENTS_EXCHANGE,
+            )
 
+        return db_tasks
+
+    @classmethod
+    async def complete(self, guid: UUID):
+        db_task = await self.get(guid)
+        db_task.is_done = True
         db.commit()
-        db.refresh(db_user)
+        db.refresh(db_task)
 
-        return db_user
+        await publish_message({"guid": str(db_task.guid)}, "tasks.completed", 1, TASKS_CUD_EVENTS_EXCHANGE)
+
+        return db_task
 
     @classmethod
     async def get(self, guid: UUID):

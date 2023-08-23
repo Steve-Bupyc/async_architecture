@@ -12,9 +12,12 @@ DB_SCHEMA = "task_manager"
 
 # Services
 RABBITMQ_SERVICE_URL = "amqp://guest:guest@localhost:5672/"
-USER_CREATED = "UserCreated"
-USER_UPDATED = "UserUpdated"
-USER_ROLE_CHANGED = "UserRoleChanged"
+USERS_CUD_EVENTS_EXCHANGE = "users.cud.events"
+TASKS_CUD_EVENTS_EXCHANGE = "tasks.cud.events"
+BUSINESS_EVENTS_EXCHANGE = "bussines.events"
+USER_CREATED = "users.created"
+USER_UPDATED = "users.updated"
+USER_ROLE_CHANGED = "users.role_changed"
 AUTH_SERVICE_URL = "http://localhost:8080"
 TASK_MANAGER_URL = "http://localhost:8081"
 

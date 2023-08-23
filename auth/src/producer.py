@@ -24,7 +24,7 @@ async def publish_message(event_data: dict, event_name: str, version: int, excha
             "data": event_data,
         }
 
-        await SchemaRegistry.validate_event(event_message, "users.created", version=1)
+        await SchemaRegistry.validate_event(event_message, event_name, version=version)
 
         await publish_message_to_rabbitmq_exchange(
             message_body=json.dumps(event_message),
