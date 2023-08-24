@@ -1,7 +1,7 @@
 import re
 from uuid import UUID
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel
 from src.db.base import Roles
 
 
@@ -36,19 +36,4 @@ class TaskBaseSchema(BaseModel):
 
 
 class TaskCreateSchema(TaskBaseSchema):
-    @field_validator("title")
-    def title_must_be_without_brackets(cls, v: str) -> str:
-        result = re.match("/[^\]\[]/", v)
-        print(v, result)
-        if result:
-            raise ValueError("Title must be without brackets")
-
-        return v
-
-
-class TaskResponseSchema(TaskBaseSchema):
-    guid: UUID
-    is_done: bool
-
-    class Config:
-        from_attributes = True
+    pass

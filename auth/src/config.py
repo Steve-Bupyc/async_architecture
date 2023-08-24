@@ -16,6 +16,9 @@ DB_SCHEMA = "auth"
 RABBITMQ_SERVICE_URL = "amqp://guest:guest@localhost:5672/"
 USERS_CUD_EVENTS_EXCHANGE = "users.cud.events"
 BUSINESS_EVENTS_EXCHANGE = "bussines.events"
+USER_CREATED = "Users.Created"
+USER_UPDATED = "Users.Updated"
+USER_ROLE_CHANGED = "Users.RoleChanged"
 
 # APP settings
 SECRET_KEY = "e8e2d862e49058382259f2e34a9d3854331c05c25b198b8cdc6a728ab24b3114"
@@ -31,5 +34,5 @@ sys.path.insert(0, "/mnt/d/work/Projects/async architecture/async_architecture/"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token",
-    scopes={"task-manager": "Access to Task Manager Service"},
+    scopes={"task-manager": "Access to Task Manager Service", "accounting": "Access to Accounting Service"},
 )

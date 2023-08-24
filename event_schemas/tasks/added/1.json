@@ -1,6 +1,6 @@
 {
-    "title": "Tasks.Created",
-    "version": 2,
+    "title": "Tasks.Added",
+    "version": 1,
     "type": "object",
     "$defs": {
         "event_data": {
@@ -12,15 +12,6 @@
                 },
                 "title": {
                     "title": "Title",
-                    "type": "string"
-                },
-                "jira_id": {
-                    "title": "Jira Id",
-                    "type": "string"
-                },
-                "created_by": {
-                    "format": "uuid",
-                    "title": "Created By",
                     "type": "string"
                 },
                 "assigned_to": {

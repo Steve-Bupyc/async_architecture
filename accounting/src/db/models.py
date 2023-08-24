@@ -16,6 +16,7 @@ class User(Base):
     username = Column(String, nullable=False, unique=True)
     full_name = Column(String)
     role = Column(Enum(Roles, inherit_schema=True), nullable=False)
+    balance = Column(Integer, nullable=False, default=0)
     is_active = Column(Boolean, default=True, nullable=False)
 
     created_tasks = relationship("Task", back_populates="created", foreign_keys="Task.created_by")
@@ -88,7 +89,6 @@ class Task(Base):
                 "guid": str(db_task.guid),
                 "title": db_task.title,
                 "jira_id": db_task.jira_id,
-                "description": db_task.description,
                 "created_by": str(db_task.created_by),
                 "assigned_to": str(db_task.assigned_to),
             },
@@ -99,8 +99,6 @@ class Task(Base):
         await publish_message(
             {
                 "guid": str(db_task.guid),
-                "title": db_task.title,
-                "description": db_task.description,
                 "assigned_to": str(db_task.assigned_to),
             },
             TASK_ADDED,
@@ -120,13 +118,10 @@ class Task(Base):
             db.commit()
             db.refresh(db_task)
             await publish_message(
-                {"guid": str(db_task.guid), "assigned_to": str(db_task.assigned_to)},
-                TASK_UPDATED,
-                1,
-                TASKS_CUD_EVENTS_EXCHANGE,
-            )
-            await publish_message(
-                {"guid": str(db_task.guid), "assigned_to": str(db_task.assigned_to)},
+                {
+                    "guid": str(db_task.guid),
+                    "assigned_to": str(db_task.assigned_to),
+                },
                 TASK_ASSIGNED,
                 1,
                 BUSINESS_EVENTS_EXCHANGE,
@@ -141,10 +136,7 @@ class Task(Base):
         db.commit()
         db.refresh(db_task)
 
-        await publish_message(
-            {"guid": str(db_task.guid), "is_done": db_task.is_done}, TASK_UPDATED, 1, TASKS_CUD_EVENTS_EXCHANGE
-        )
-        await publish_message({"guid": str(db_task.guid)}, TASK_COMPLETED, 1, BUSINESS_EVENTS_EXCHANGE)
+        await publish_message({"guid": str(db_task.guid)}, "tasks.completed", 1, TASKS_CUD_EVENTS_EXCHANGE)
 
         return db_task
 

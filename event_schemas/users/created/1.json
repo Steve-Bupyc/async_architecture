@@ -1,5 +1,6 @@
 {
-    "title": "users.created.v1",
+    "title": "Users.Created",
+    "version": 1,
     "type": "object",
     "$defs": {
         "Roles": {
