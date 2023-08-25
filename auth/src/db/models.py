@@ -45,7 +45,7 @@ class User(Base):
                 "role": db_user.role,
                 "is_active": db_user.is_active,
             },
-            "users.created",
+            USER_CREATED,
             1,
             USERS_CUD_EVENTS_EXCHANGE,
         )
@@ -77,7 +77,7 @@ class User(Base):
                 "role": db_user.role,
                 "is_active": db_user.is_active,
             },
-            "users.updated",
+            USER_UPDATED,
             1,
             USERS_CUD_EVENTS_EXCHANGE,
         )
@@ -85,7 +85,7 @@ class User(Base):
         if role_changed:
             await publish_message(
                 {"guid": str(db_user.guid), "role": db_user.role},
-                "users.role_changed",
+                USER_ROLE_CHANGED,
                 1,
                 BUSINESS_EVENTS_EXCHANGE,
             )

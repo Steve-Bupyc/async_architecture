@@ -1,5 +1,5 @@
 {
-    "title": "Tasks.Created",
+    "title": "Tasks.Updated",
     "version": 2,
     "type": "object",
     "$defs": {
@@ -14,10 +14,6 @@
                     "title": "Title",
                     "type": "string"
                 },
-                "jira_id": {
-                    "title": "Jira Id",
-                    "type": "string"
-                },
                 "created_by": {
                     "format": "uuid",
                     "title": "Created By",
@@ -27,13 +23,14 @@
                     "format": "uuid",
                     "title": "Assigned To",
                     "type": "string"
+                },
+                "is_done": {
+                    "title": "Is Done",
+                    "type": "boolean"
                 }
             },
             "required": [
-                "guid",
-                "title",
-                "created_by",
-                "assigned_to"
+                "guid"
             ],
             "title": "event_data",
             "type": "object"

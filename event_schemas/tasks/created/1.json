@@ -1,5 +1,6 @@
 {
-    "title": "tasks.created.1",
+    "title": "Tasks.Created",
+    "version": 1,
     "type": "object",
     "$defs": {
         "event_data": {

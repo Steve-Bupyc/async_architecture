@@ -1,5 +1,6 @@
 {
-    "title": "tasks.assigned.1",
+    "title": "Tasks.Assigned",
+    "version": 1,
     "type": "object",
     "$defs": {
         "event_data": {

@@ -1,5 +1,6 @@
 {
-    "title": "tasks.completed.1",
+    "title": "Tasks.Completed",
+    "version": 1,
     "type": "object",
     "$defs": {
         "event_data": {
