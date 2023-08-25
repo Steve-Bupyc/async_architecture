@@ -14,8 +14,8 @@ DB_SCHEMA = "auth"
 
 # Services
 RABBITMQ_SERVICE_URL = "amqp://guest:guest@localhost:5672/"
-USERS_CUD_EVENTS_EXCHANGE = "users.cud.events"
-BUSINESS_EVENTS_EXCHANGE = "bussines.events"
+USERS_STREAM_EXCHANGE = "users-stream"
+USERS_LIFECYCLE_EXCHANGE = "users-lifecycle"
 USER_CREATED = "Users.Created"
 USER_UPDATED = "Users.Updated"
 USER_ROLE_CHANGED = "Users.RoleChanged"

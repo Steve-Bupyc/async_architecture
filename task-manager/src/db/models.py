@@ -94,18 +94,19 @@ class Task(Base):
             },
             TASK_CREATED,
             2,
-            TASKS_CUD_EVENTS_EXCHANGE,
+            TASKS_STREAM_EXCHANGE,
         )
         await publish_message(
             {
                 "guid": str(db_task.guid),
                 "title": db_task.title,
+                "jira_id": db_task.jira_id,
                 "description": db_task.description,
                 "assigned_to": str(db_task.assigned_to),
             },
             TASK_ADDED,
             1,
-            BUSINESS_EVENTS_EXCHANGE,
+            TASKS_LIFECYCLE_EXCHANGE,
         )
 
         return db_task
@@ -123,13 +124,13 @@ class Task(Base):
                 {"guid": str(db_task.guid), "assigned_to": str(db_task.assigned_to)},
                 TASK_UPDATED,
                 1,
-                TASKS_CUD_EVENTS_EXCHANGE,
+                TASKS_STREAM_EXCHANGE,
             )
             await publish_message(
                 {"guid": str(db_task.guid), "assigned_to": str(db_task.assigned_to)},
                 TASK_ASSIGNED,
                 1,
-                BUSINESS_EVENTS_EXCHANGE,
+                TASKS_LIFECYCLE_EXCHANGE,
             )
 
         return db_tasks
@@ -142,9 +143,9 @@ class Task(Base):
         db.refresh(db_task)
 
         await publish_message(
-            {"guid": str(db_task.guid), "is_done": db_task.is_done}, TASK_UPDATED, 1, TASKS_CUD_EVENTS_EXCHANGE
+            {"guid": str(db_task.guid), "is_done": db_task.is_done}, TASK_UPDATED, 1, TASKS_STREAM_EXCHANGE
         )
-        await publish_message({"guid": str(db_task.guid)}, TASK_COMPLETED, 1, BUSINESS_EVENTS_EXCHANGE)
+        await publish_message({"guid": str(db_task.guid)}, TASK_COMPLETED, 1, TASKS_LIFECYCLE_EXCHANGE)
 
         return db_task
 

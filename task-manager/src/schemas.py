@@ -39,7 +39,6 @@ class TaskCreateSchema(TaskBaseSchema):
     @field_validator("title")
     def title_must_be_without_brackets(cls, v: str) -> str:
         result = re.match("/[^\]\[]/", v)
-        print(v, result)
         if result:
             raise ValueError("Title must be without brackets")
 

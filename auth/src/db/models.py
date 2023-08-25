@@ -47,7 +47,7 @@ class User(Base):
             },
             USER_CREATED,
             1,
-            USERS_CUD_EVENTS_EXCHANGE,
+            USERS_STREAM_EXCHANGE,
         )
 
         return db_user
@@ -79,15 +79,11 @@ class User(Base):
             },
             USER_UPDATED,
             1,
-            USERS_CUD_EVENTS_EXCHANGE,
+            USERS_STREAM_EXCHANGE,
         )
-        BUSINESS_EVENTS_EXCHANGE
         if role_changed:
             await publish_message(
-                {"guid": str(db_user.guid), "role": db_user.role},
-                USER_ROLE_CHANGED,
-                1,
-                BUSINESS_EVENTS_EXCHANGE,
+                {"guid": str(db_user.guid), "role": db_user.role}, USER_ROLE_CHANGED, 1, USERS_LIFECYCLE_EXCHANGE
             )
 
         return db_user

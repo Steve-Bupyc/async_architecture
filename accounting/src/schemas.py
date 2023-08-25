@@ -1,13 +1,7 @@
-import re
 from uuid import UUID
 
 from pydantic import BaseModel
-from src.db.base import Roles
-
-
-class TokenSchema(BaseModel):
-    access_token: str
-    token_type: str
+from src.db.base import Roles, Types
 
 
 class TokenData(BaseModel):
@@ -30,10 +24,35 @@ class UserUpdateSchema(BaseModel):
 
 
 class TaskBaseSchema(BaseModel):
+    guid: UUID
     title: str = ...
     jira_id: str = ...
     description: str = ...
+    assigned_to: UUID
 
 
 class TaskCreateSchema(TaskBaseSchema):
     pass
+
+
+class TaskUpdateSchema(TaskBaseSchema):
+    is_done: bool
+
+
+class TransactionBaseSchema(BaseModel):
+    amount: int
+    type: Types
+    description: str
+
+
+class TransactionCreateSchema(TransactionBaseSchema):
+    user_guid: UUID
+
+
+class StatisticsTotalResponseSchema(BaseModel):
+    total_earned: int
+
+
+class MyStatisticsResponseSchema(BaseModel):
+    balance: int
+    transactions: list[TransactionBaseSchema]
