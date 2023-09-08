@@ -14,7 +14,7 @@ from schema_registry import SchemaRegistry
 logger = logging.getLogger(__name__)
 
 
-async def consumer(message: AbstractIncomingMessage) -> None:
+async def users_consumer(message: AbstractIncomingMessage) -> None:
     async with message.process():
         data = json.loads(message.body.decode("utf-8"))
         logger.info(f"{message.routing_key} message received, body: {data}.")
@@ -28,7 +28,7 @@ async def consumer(message: AbstractIncomingMessage) -> None:
             await User.create(UserCreateSchema.model_validate(data["data"]))
         elif message.routing_key == USER_UPDATED:
             await User.update(data["data"]["guid"], UserUpdateSchema.model_validate(data["data"]))
-        elif message.routing_key == USER_UPDATED:
+        elif message.routing_key == USER_ROLE_CHANGED:
             await User.update_role(data["data"]["guid"], data["data"]["role"])
 
 
@@ -41,29 +41,21 @@ async def worker() -> None:
         await channel.set_qos(prefetch_count=1)
 
         # Declare an exchange
-        user_cud_events_exchange = await channel.declare_exchange(
-            USERS_CUD_EVENTS_EXCHANGE, ExchangeType.TOPIC, durable=True
-        )
-        business_events_exchange = await channel.declare_exchange(
-            BUSINESS_EVENTS_EXCHANGE, ExchangeType.TOPIC, durable=True
+        users_stream_exchange = await channel.declare_exchange(USERS_STREAM_EXCHANGE, ExchangeType.TOPIC, durable=True)
+        users_lifecycle_exchange = await channel.declare_exchange(
+            USERS_LIFECYCLE_EXCHANGE, ExchangeType.TOPIC, durable=True
         )
 
         # Declaring queue
-        user_events_queue = await channel.declare_queue(
-            "task-manager.user-events.queue",
-            durable=True,
-        )
-        business_events_queue = await channel.declare_queue(
-            "task-manager.business-events.queue",
-            durable=True,
-        )
+        user_stream_queue = await channel.declare_queue("task-manager.user-stream.queue", durable=True)
+        users_lifecycle_queue = await channel.declare_queue("task-manager.user-lifecycle.queue", durable=True)
 
-        await user_events_queue.bind(user_cud_events_exchange, routing_key=USER_CREATED)
-        await user_events_queue.bind(user_cud_events_exchange, routing_key=USER_UPDATED)
-        await business_events_queue.bind(business_events_exchange, routing_key=USER_ROLE_CHANGED)
+        await user_stream_queue.bind(users_stream_exchange, routing_key=USER_CREATED)
+        await user_stream_queue.bind(users_stream_exchange, routing_key=USER_UPDATED)
+        await users_lifecycle_queue.bind(users_lifecycle_exchange, routing_key=USER_ROLE_CHANGED)
 
-        await user_events_queue.consume(consumer)
-        await business_events_queue.consume(consumer)
+        await user_stream_queue.consume(users_consumer)
+        await users_lifecycle_queue.consume(users_consumer)
         logger.info(" [*] Waiting for messages.")
         await asyncio.Future()
 

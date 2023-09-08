@@ -17,3 +17,14 @@ class Roles(str, enum.Enum):
     manager = "manager"
     worker = "worker"
     accountant = "accountant"
+
+
+class Types(str, enum.Enum):
+    debit = "debit"  # Приход
+    credit = "credit"  # Расход
+    payment = "payment"  # Выплата
+
+
+class PaymentStatuses(str, enum.Enum):
+    created = "created"
+    completed = "completed"

@@ -1,5 +1,5 @@
 {
-    "title": "Tasks.Added",
+    "title": "Payments.Paid",
     "version": 1,
     "type": "object",
     "$defs": {
@@ -10,25 +10,14 @@
                     "title": "Guid",
                     "type": "string"
                 },
-                "title": {
-                    "title": "Title",
-                    "type": "string"
-                },
-                "jira_id": {
-                    "title": "Jira Id",
-                    "type": "string"
-                },
-                "assigned_to": {
-                    "format": "uuid",
-                    "title": "Assigned To",
-                    "type": "string"
+                "amount": {
+                    "title": "Amount",
+                    "type": "integer"
                 }
             },
             "required": [
                 "guid",
-                "jira_id",
-                "title",
-                "assigned_to"
+                "amount"
             ],
             "title": "event_data",
             "type": "object"

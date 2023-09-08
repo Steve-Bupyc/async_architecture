@@ -12,9 +12,10 @@ DB_SCHEMA = "task_manager"
 
 # Services
 RABBITMQ_SERVICE_URL = "amqp://guest:guest@localhost:5672/"
-USERS_CUD_EVENTS_EXCHANGE = "users.cud.events"
-TASKS_CUD_EVENTS_EXCHANGE = "tasks.cud.events"
-BUSINESS_EVENTS_EXCHANGE = "bussines.events"
+USERS_STREAM_EXCHANGE = "users-stream"
+TASKS_STREAM_EXCHANGE = "tasks-stream"
+USERS_LIFECYCLE_EXCHANGE = "users-lifecycle"
+TASKS_LIFECYCLE_EXCHANGE = "tasks-lifecycle"
 USER_CREATED = "Users.Created"
 USER_UPDATED = "Users.Updated"
 USER_ROLE_CHANGED = "Users.RoleChanged"
